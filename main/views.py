@@ -1,3 +1,5 @@
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.core.signing import BadSignature
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404
@@ -13,8 +15,33 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 
 from .utilities import signer
-from .models import AdvUser
-from .forms import ChangeUserInfoForm, RegisterUserForm
+from .models import AdvUser, SubGroup, Bb
+from .forms import ChangeUserInfoForm, RegisterUserForm, SearchForm
+
+def detail(request, group_pk, pk):
+    bb = get_object_or_404(Bb, pk=pk)
+    ais = bb.additionalimage_set.all()
+    context = {'bb': bb, 'ais': ais}
+    return render(request, 'main/detail.html', context)
+
+def by_group(request, pk):
+    group = get_object_or_404(SubGroup, pk=pk)
+    bbs = Bb.objects.filter(is_active=True, group=pk)
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        q = Q(title__icontains=keyword) | Q(content__icontains=keyword)
+        bbs = bbs.filter(q)
+    else:
+        keyword = ''
+    form = SearchForm(initial={'keyword': keyword})
+    paginator = Paginator(bbs, 2)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+    page = paginator.get_page(page_num)
+    context = {'group': group, 'page': page, 'bbs': page.object_list, 'form': form}
+    return render(request, 'main/by_group.html', context)
 
 class DeleteUserView(LoginRequiredMixin,DeleteView):
     model = AdvUser
@@ -85,7 +112,9 @@ class BBLogoutView(LoginRequiredMixin, LogoutView):
 
 @login_required
 def profile(request):
-    return render(request, 'main/profile.html')
+    bbs = Bb.objects.filter(author=request.user.pk)
+    context = {'bbs': bbs}
+    return render(request, 'main/profile.html', context)
 
 class BBLoginView(LoginView):
     template_name = 'main/login.html'
@@ -98,7 +127,9 @@ def other_page(request, page):
     return HttpResponse(template.render(request=request))
 
 def index(request):
-    return render(request, 'main/index.html')
+    bbs = Bb.objects.filter(is_active=True)[:10]
+    context = {'bbs': bbs}
+    return render(request, 'main/index.html', context)
 
 
 

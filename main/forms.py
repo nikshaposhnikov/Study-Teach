@@ -2,7 +2,18 @@ from django import forms
 from django.contrib.auth import password_validation
 
 from .models import user_registrated
-from .models import AdvUser
+from .models import AdvUser, SuperGroup, SubGroup
+
+class SearchForm(forms.Form):
+    keyword = forms.CharField(required=False, max_length=20, label='')
+
+class SubGroupForm(forms.ModelForm):
+    super_group = forms.ModelChoiceField(queryset=SuperGroup.objects.all(), empty_label=None,
+                                         label='Надгруппа', required=True)
+
+    class Meta:
+        model = SubGroup
+        fields = '__all__'
 
 class RegisterUserForm(forms.ModelForm):
     email = forms.EmailField(required=True, label='Адрес электронной почты')

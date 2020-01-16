@@ -40,13 +40,14 @@
     <div class="row">
         <nav class="col-md-auto nav flex-column border">
             <a class="nav-link root" href="{% url 'main:index' %}">Главная</a>
-            <span class="nav-link root font-weight-bold">КН-26</span>
-            <a class="nav-link" href="#">asdas</a>
-            <a class="nav-link" href="#">sac</a>
-            <a class="nav-link" href="#">asc</a>
-            <span class="nav-link root font-weight-bold" href="#">КН-27</span>
-            <a class="nav-link" href="#">sfaa</a>
-            <a class="nav-link" href="#">sda</a>
+            {% for group in groups %}
+            {% ifchanged group.super_group.pk %}
+            <span class="nav-link root font-weight-bold">
+                {{ group.super_group.name }}</span>
+            {% endifchanged %}
+            <a class="nav-link" href="{% url 'main:by_group' pk=group.pk %}">
+                {{ group.name }}</a>
+            {% endfor %}
             <a class="nav-link root" href="{% url 'main:other' page='about' %}">О сайте</a>
         </nav>
         <section class="col-border py-2">

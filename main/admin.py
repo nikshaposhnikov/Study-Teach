@@ -1,9 +1,33 @@
 from django.contrib import admin
 import datetime
 
-from .models import AdvUser
+from .forms import SubGroupForm
+from .models import AdvUser, SuperGroup, SubGroup, Bb, AdditionalImage
 from .utilities import send_activation_notification
 
+class AdditionalImageInline(admin.TabularInline):
+    model = AdditionalImage
+
+class BbAdmin(admin.ModelAdmin):
+    list_display = ('group', 'title', 'content', 'author', 'created_at')
+    fields = (('group', 'author'), 'title', 'content', 'image', 'is_active')
+    inlines = (AdditionalImageInline,)
+
+admin.site.register(Bb, BbAdmin)
+
+class SubGroupAdmin(admin.ModelAdmin):
+    form = SubGroupForm
+
+admin.site.register(SubGroup, SubGroupAdmin)
+
+class SubGroupInline(admin.TabularInline):
+    model = SubGroup
+
+class SuperGroupAdmin(admin.ModelAdmin):
+    exclude = ('super_group',)
+    inlines = (SubGroupInline,)
+
+admin.site.register(SuperGroup, SuperGroupAdmin)
 def send_activation_notifications(modeladmin, request, queryset):
     for rec in queryset:
         if not rec.is_activated:
