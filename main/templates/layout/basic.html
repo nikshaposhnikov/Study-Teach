@@ -11,15 +11,21 @@
     {% bootstrap_javascript jquery='slim' %}
 </head>
 <body class="container-fluid">
-<header class="mb-4">
-    <h1 class="display-1 text-center">Объявления</h1>
-</header>
-<section class="row bg-light">
-    <ul class="col nav justify-content-end border">
-        <li class="nav-item"><a class="nav-link root list-group-item list-group-item-action bg-light border-0" href="{% url 'main:register' %}">Регистрация</a></li>
+<!--<header class="mb-4">-->
+<!--    <h1 class="display-1 text-center">Объявления</h1>-->
+<!--</header>-->
+
+<header class="header row bg-light border">
+    <a class="logo navbar-brand" href="#">
+        <img  class="logo__img" src="../../static/main/khpi.jpg" alt="logo">
+    </a>
+    <ul class="col nav justify-content-end ">
+        <li class="nav-item"><a class="header__link nav-link root list-group-item list-group-item-action bg-light border-0"
+                                href="{% url 'main:register' %}">Регистрация</a></li>
         {% if user.is_authenticated %}
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle root list-group-item list-group-item-action bg-light border-0" data-toggle="dropdown" href="#"
+            <a class="header__link nav-link dropdown-toggle root list-group-item list-group-item-action bg-light border-0"
+               data-toggle="dropdown" href="#"
                role="button" aria-haspopup="true" aria-expanded="false">Профиль</a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="{% url 'main:profile' %}">Мои объявления</a>
@@ -35,7 +41,8 @@
         <li class="nav-item"><a class="nav-link" href="{% url 'main:login' %}">Вход</a></li>
         {% endif %}
     </ul>
-</section>
+</header>
+
 <section class="content">
     <div class="bg-light border-right sidenav" id="sidebar-wrapper">
         <div class="list-group list-group-flush">

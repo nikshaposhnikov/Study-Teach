@@ -26,3 +26,18 @@ img.additional-image {
 .sidenav{
     width: 25%;
 }
+.header{
+    display: flex;
+    align-items: center;
+    padding: 20px 10px 20px 10px
+}
+.logo{
+    padding-left: 1rem;
+}
+.logo__img{
+    width: 6.25rem;
+    height: 6.25rem;
+}
+.header__link{
+    font-size: 1.25rem;
+}
